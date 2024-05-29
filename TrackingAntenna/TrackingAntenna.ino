@@ -2,6 +2,7 @@
 #include "Src/DronePosition/DronePosition.hpp"
 #include "Src/AntennaDynamics/AntennaDynamics.hpp"
 #include "Src/Util/Util.hpp"
+#include "Src/Config/Config.hpp"
 
 AntennaPosition antennaPos{};
 DronePosition dronePos{};
@@ -9,10 +10,22 @@ AntennaDynamics antennaDyn{};
 
 void setup() {
   // put your setup code here, to run once:
-  antennaPos.beginGPS();
-  antennaPos.getPosition();  
+  Serial.begin(115200);
 
-  antennaDyn.setup(); // until compass is installed
+  while(!Serial);
+
+  while (!antennaPos.beginGPS()) {
+    PDEBUG("Could not connect to GPS, retrying... \n");
+    delay(1000);
+  }
+
+  while (!antennaPos.getGPSPosition()) {
+    PDEBUG("Not enough satellites found, retrying... \n");
+    delay(1000);
+  }
+  
+
+  // antennaDyn.setup(); // until compass is installed
 
   // antennaDyn.setNorthBearing(antennaPos.northBearing()); // Once compass is installed
 }

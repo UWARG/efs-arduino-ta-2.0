@@ -2,11 +2,12 @@
 #include <Wire.h>
 #include "../Config/Config.hpp"
 
-void AntennaPosition::beginAltimeter() {
+bool AntennaPosition::beginAltimeter() {
   Wire.begin();
 
-  while (altimeter_.begin() == false) {
-    PDEBUG("MS5611 not found! Retrying... \n");
+  if (altimeter_.begin() == false) {
+      PDEBUG("MS5611 not found!\n");
+      return false;
   }
 
   altimeter_.setOversampling(OSR_ULTRA_HIGH); // OSR_ULTRA_HIGH -> 8.22 millis of samples
@@ -14,19 +15,21 @@ void AntennaPosition::beginAltimeter() {
   // Grab the sensor's altitude above sea level while on some surface and assign it to base_elev_
 	// Subtract this from measurements at greater heights for the height above that initial surface.
 	for (int i = 0; i < 100; i++) { //take a few measurements to make sure they are accurate/consistent.
-		setBaseElevation();
+		// setBaseElevation();
 	}
+
+  return true;
 }
 
-void AntennaPosition::beginGPS() {
-    PDEBUG("Waiting for GPS fix...");
+bool AntennaPosition::beginGPS() {
+    PDEBUG("Waiting for GPS fix... \n");
 
     Wire.begin();
 
-    while (GPS_.begin() == false) //Connect to the u-blox module using Wire port
+    if (GPS_.begin() == false) //Connect to the u-blox module using Wire port
     {
         PDEBUG(F("u-blox GPS not detected. Retrying... \n"));
-        delay (1000);
+        return false;
     }
 
     GPS_.setI2COutput(COM_TYPE_UBX | COM_TYPE_NMEA); //Set the I2C port to output both NMEA and UBX messages
@@ -37,6 +40,8 @@ void AntennaPosition::beginGPS() {
     GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
     GPS.sendCommand(PGCMD_ANTENNA); */
     PDEBUG("GPS: connected through I2C \n");
+
+    return true;
 }
 
 bool AntennaPosition::getAltimeterPosition() {
@@ -45,16 +50,17 @@ bool AntennaPosition::getAltimeterPosition() {
   {
     PDEBUG("Error in read: ");
     PDEBUG(result);
-    PDEBUG("\n")
+    PDEBUG("\n");
     return false;
   }
 
   PDEBUG("Temperature: ");
-  PDEBUG(altimeter_.getTemperature(), 2);
+  PDEBUG(altimeter_.getTemperature());
   PDEBUG("\tPressure: ");
-  PDEBUG(altimeter_.getPressure(), 2);
+  PDEBUG(altimeter_.getPressure());
   PDEBUG("\n");
 
+  return true;
   
 }
 
@@ -128,5 +134,6 @@ float AntennaPosition::altitude() {
 }
 
 float AntennaPosition::northBearing() {
+  return 0;
     // return northBearing_; // nothing getting this value currently
 }

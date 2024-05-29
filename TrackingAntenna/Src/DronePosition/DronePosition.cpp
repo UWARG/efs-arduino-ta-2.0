@@ -16,8 +16,18 @@ bool DronePosition::getPosition() {
                 mavlink_msg_global_position_int_decode(&msg, &position);
 
                 latitude_ = position.lat / 1e7;
+                PDEBUG(F("Drone Lat: "));
+                PDEBUG(latitude_);
+
                 longitude_ = position.lon / 1e7;
+                PDEBUG(F(" Drone Long: "));
+                PDEBUG(longitude_);
+                PDEBUG(F(" (degrees)"));
+
                 altitude_ = position.relative_alt / 1e3;
+                PDEBUG(F(" Drone Alt: "));
+                PDEBUG(altitude_);
+                PDEBUG(F(" (m)"));
 
                 retVal = true;  
             }

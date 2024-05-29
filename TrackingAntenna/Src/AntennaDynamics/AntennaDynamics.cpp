@@ -9,8 +9,10 @@ AntennaDynamics::AntennaDynamics():
     yawServo_.attach(YAW_PWM);
 }
 
-void AntennaDynamics::setup() {
-    yawServo_.
+void AntennaDynamics::manualSetup() { // get rid of this when we have the compass again
+    yawServo_.write(YAW_MID_POS);
+    delay(5000);
+    
 }
 
 void AntennaDynamics::setNorthBearing(float angle) {

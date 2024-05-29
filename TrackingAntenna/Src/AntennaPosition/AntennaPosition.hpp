@@ -8,14 +8,16 @@
 class AntennaPosition {
    private:
     SFE_UBLOX_GNSS GPS_;
-    MS5611 altimeter_(0x77);
+    MS5611 altimeter_ {0x77};
     float latitude_;
     float longitude_;
     float altitude_;
 
    public:
-    void beginGPS();
-    bool getPosition();
+    bool beginGPS();
+    bool beginAltimeter();
+    bool getGPSPosition();
+    bool getAltimeterPosition();
     float latitude();
     float longitude();
     float altitude();
