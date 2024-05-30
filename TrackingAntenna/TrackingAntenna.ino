@@ -25,16 +25,18 @@ void setup() {
   }
   
 
-  // antennaDyn.setup(); // until compass is installed
+  antennaDyn.manualSetup(); // until compass is installed
 
   // antennaDyn.setNorthBearing(antennaPos.northBearing()); // Once compass is installed
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+  // More about the Azimuth/Elevation coordinate system https://en.wikipedia.org/wiki/Horizontal_coordinate_system
   dronePos.getPosition();
   float antennaToDroneDistance = calculateDistance(antennaPos.latitude(), antennaPos.longitude(), dronePos.latitude(), dronePos.longitude());
-  float antennaToDroneBearing = calculateBearing(antennaPos.latitude(), antennaPos.longitude(), dronePos.latitude(), dronePos.longitude());
-  antennaDyn.setYawAngle(calculatePitchAngle(antennaToDroneDistance, dronePos.altitude()));
-  antennaDyn.setPitchAngle(calculateYawAngle(antennaToDroneBearing));
+  float antennaToDroneAzimuth = calculateAzimuth(antennaPos.latitude(), antennaPos.longitude(), dronePos.latitude(), dronePos.longitude());
+  float antennaToDroneElevation = calculateElevation(antennaToDroneDistance, antennaPos.altitude(), dronePos.altitude());
+  antennaDyn.setAzimuth(antennaToDroneAzimuth);
+  antennaDyn.setElevation(antennaToDroneElevation);
 }

@@ -11,12 +11,17 @@
 
 #define MavlinkSerial Serial
 
-#define PITCH_PWM A2
 #define YAW_PWM A3
+#define PITCH_PWM A2
 
-#define YAW_START_POS 740
-#define YAW_END_POS 2260
-#define YAW_MID_POS (YAW_START_POS + YAW_END_POS)/2
+#define YAW_START_MICROSECONDS 740
+#define YAW_END_MICROSECONDS 2260
+
+#define YAW_START_ANGLE 175
+#define YAW_END_ANGLE -175
+
+#define PITCH_START_MICROSECONDS 575
+#define PITCH_END_MICROSECONDS 2300
 
 #define MIN_SATELLITES 5 // sets the minimum number of satellites that need to be detected for antenna get position to return true
 

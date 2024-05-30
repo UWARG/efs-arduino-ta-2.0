@@ -4,12 +4,14 @@ class AntennaDynamics {
    private:
     Servo pitchServo_;
     Servo yawServo_;
-    int northMicroseconds_;
+    float initialAntennaAzimuth_;
 
    public:
     AntennaDynamics();
     void manualSetup(); // until compass is installed
-    void setNorthBearing(float angle);
-    void setYawAngle(float angle);
-    void setPitchAngle(float angle);
+    void setNorthAngle(float angle);
+    bool setAzimuth(float azimuth);
+    bool setYawAngle(float angle);
+    bool setElevation(float elevation);
+    bool setPitchAngle(float angle);
 };
