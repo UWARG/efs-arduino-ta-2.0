@@ -66,57 +66,25 @@ bool AntennaPosition::getAltimeterPosition() {
 
 bool AntennaPosition::getGPSPosition() {
 
-//     uint32_t timer = millis();
+    latitude_ = GPS_.getLatitude() / 10000000.0;;
+    PDEBUG(F("Lat: "));
+    PDEBUG(latitude_);
 
-//   do {
-//     char c = GPS.read();
-//     if (GPS.newNMEAreceived()) {
-//     Serial.println(GPS.lastNMEA()); // this also sets the newNMEAreceived() flag to false
-//     if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag to false
-//       continue; // we can fail to parse a sentence in which case we should just wait for another
-//     }
+    longitude_ = GPS_.getLongitude() / 10000000.0;
+    PDEBUG(F(" Long: "));
+    PDEBUG(longitude_);
+    PDEBUG(F(" (degrees)"));
 
-//     // approximately every 2 seconds or so, print out the current stats
-//     if (millis() - timer > 2000){
-//       timer = millis(); // reset the timer
-//       sats = GPS.satellites;
-//       Serial.println("Getting GPS, repeating...");
-//       Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
-//     }
-  
-//   } while(sats < 7);
+    altitude_ = GPS_.getAltitudeMSL() / 1000.0; // Altitude above Mean Sea Level
+    PDEBUG(F(" Alt: "));
+    PDEBUG(altitude_);
+    PDEBUG(F(" (m)"));
 
-//   AAT_LAT = GPS.latitude_fixed /10000000.0;
-//   AAT_LON = GPS.longitude_fixed /10000000.0;
+    byte SIV = GPS_.getSIV();
+    Serial.print(F(" SIV: "));
+    Serial.print(SIV);
 
-//   return true;
-
-
-    // if (GPS.getPVT() == true) {
-        latitude_ = GPS_.getLatitude() / 10000000.0;;
-        PDEBUG(F("Lat: "));
-        PDEBUG(latitude_);
-
-        longitude_ = GPS_.getLongitude() / 10000000.0;
-        PDEBUG(F(" Long: "));
-        PDEBUG(longitude_);
-        PDEBUG(F(" (degrees)"));
-
-        altitude_ = GPS_.getAltitudeMSL() / 1000.0; // Altitude above Mean Sea Level
-        PDEBUG(F(" Alt: "));
-        PDEBUG(altitude_);
-        PDEBUG(F(" (m)"));
-
-        byte SIV = GPS_.getSIV();
-        Serial.print(F(" SIV: "));
-        Serial.print(SIV);
-
-        PDEBUG("\n");
-
-    //     return true;
-    // } else {
-    //     return false;
-    // }
+    PDEBUG("\n");
 
     return SIV > MIN_SATELLITES;
 }

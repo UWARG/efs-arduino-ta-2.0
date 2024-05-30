@@ -8,7 +8,7 @@ class AntennaDynamics {
 
    public:
     AntennaDynamics();
-    void setup(); // until compass is installed
+    void manualSetup(); // until compass is installed
     void setNorthBearing(float angle);
     void setYawAngle(float angle);
     void setPitchAngle(float angle);
