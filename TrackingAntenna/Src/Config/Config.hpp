@@ -1,0 +1,28 @@
+#include "Arduino.h"
+
+// comment the next line out to disable debug prints
+#define DEBUG
+
+#ifdef DEBUG
+    #define PDEBUG(x) Serial.print(x)
+#else
+    #define PDEBUG(x) do {} while(0)
+#endif
+
+#define MavlinkSerial Serial
+
+#define YAW_PWM A3
+#define PITCH_PWM A2
+
+#define YAW_START_MICROSECONDS 740
+#define YAW_END_MICROSECONDS 2260
+
+#define YAW_START_ANGLE 175
+#define YAW_END_ANGLE -175
+
+#define PITCH_START_MICROSECONDS 575
+#define PITCH_END_MICROSECONDS 2300
+
+#define MIN_SATELLITES 5 // sets the minimum number of satellites that need to be detected for antenna get position to return true
+
+// make all of this constant case (capitals with underscores)
