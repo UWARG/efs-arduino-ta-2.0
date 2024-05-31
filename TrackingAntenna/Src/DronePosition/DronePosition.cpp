@@ -24,7 +24,7 @@ bool DronePosition::getPosition() {
                 PDEBUG(longitude_);
                 PDEBUG(F(" (degrees)"));
 
-                altitude_ = position.relative_alt / 1e3;
+                altitude_ = position.alt / 1e3;
                 PDEBUG(F(" Drone Alt: "));
                 PDEBUG(altitude_);
                 PDEBUG(F(" (m)"));

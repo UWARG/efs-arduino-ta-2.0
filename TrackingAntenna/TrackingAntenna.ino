@@ -23,7 +23,16 @@ void setup() {
     PDEBUG("Not enough satellites found, retrying... \n");
     delay(1000);
   }
+
+  while (!antennaPos.beginAltimeter()) {
+    PDEBUG("Could not connect to altimeter, retrying... \n");
+    delay(1000);
+  }
   
+  while (!getAltimeterPosition()) {
+    PDEBUG("Altimeter read failed, retrying... \n");
+    delay(1000);
+  }
 
   antennaDyn.manualSetup(); // until compass is installed
 

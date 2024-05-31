@@ -12,12 +12,6 @@ bool AntennaPosition::beginAltimeter() {
 
   altimeter_.setOversampling(OSR_ULTRA_HIGH); // OSR_ULTRA_HIGH -> 8.22 millis of samples
 
-  // Grab the sensor's altitude above sea level while on some surface and assign it to base_elev_
-	// Subtract this from measurements at greater heights for the height above that initial surface.
-	for (int i = 0; i < 100; i++) { //take a few measurements to make sure they are accurate/consistent.
-		// setBaseElevation();
-	}
-
   return true;
 }
 
@@ -60,6 +54,8 @@ bool AntennaPosition::getAltimeterPosition() {
   PDEBUG(altimeter_.getPressure());
   PDEBUG("\n");
 
+  altitude_ = getAltitudeAboveSeaLevel();
+
   return true;
   
 }
@@ -75,10 +71,10 @@ bool AntennaPosition::getGPSPosition() {
     PDEBUG(longitude_);
     PDEBUG(F(" (degrees)"));
 
-    altitude_ = GPS_.getAltitudeMSL() / 1000.0; // Altitude above Mean Sea Level
-    PDEBUG(F(" Alt: "));
-    PDEBUG(altitude_);
-    PDEBUG(F(" (m)"));
+    // altitude_ = GPS_.getAltitudeMSL() / 1000.0; // Altitude above Mean Sea Level
+    // PDEBUG(F(" Alt: "));
+    // PDEBUG(altitude_);
+    // PDEBUG(F(" (m)"));
 
     byte SIV = GPS_.getSIV();
     Serial.print(F(" SIV: "));
@@ -87,6 +83,22 @@ bool AntennaPosition::getGPSPosition() {
     PDEBUG("\n");
 
     return SIV > MIN_SATELLITES;
+}
+
+// Adapted from Fola Fatola https://github.com/UWARG/efs-zeropilot-3.5/pull/53
+float AntennaPosition::getAltitudeAboveSeaLevel(){
+	float pressure = altimeter_.getPressure();
+
+	const float CURRENT_PRESSURE = pressure * 100.0f;
+	const float EXPONENT = (log(CURRENT_PRESSURE) - log(REFERENCE_PRESSURE)) / EXP_GMRL;
+
+	float altitudeAboveSeaLevel = REFERENCE_TEMP / TEMP_LAPSE_RATE * (1 - pow(M_E, EXPONENT));
+
+  PDEBUG("Altitude Above Sea Level: ");
+  PDEBUG(altitudeAboveSeaLevel);
+  PDEBUG("\n");
+
+	return altitudeAboveSeaLevel;
 }
 
 float AntennaPosition::latitude() {
