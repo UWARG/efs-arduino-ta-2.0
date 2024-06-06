@@ -2,19 +2,6 @@
 #include <Wire.h>
 #include "../Config/Config.hpp"
 
-bool AntennaPosition::beginAltimeter() {
-  Wire.begin();
-
-  if (altimeter_.begin() == false) {
-      PDEBUG("MS5611 not found!\n");
-      return false;
-  }
-
-  altimeter_.setOversampling(OSR_ULTRA_HIGH); // OSR_ULTRA_HIGH -> 8.22 millis of samples
-
-  return true;
-}
-
 bool AntennaPosition::beginGPS() {
     PDEBUG("Waiting for GPS fix... \n");
 
@@ -38,28 +25,6 @@ bool AntennaPosition::beginGPS() {
     return true;
 }
 
-bool AntennaPosition::getAltimeterPosition() {
-  int result = altimeter_.read();
-  if (result != MS5611_READ_OK)
-  {
-    PDEBUG("Error in read: ");
-    PDEBUG(result);
-    PDEBUG("\n");
-    return false;
-  }
-
-  PDEBUG("Temperature: ");
-  PDEBUG(altimeter_.getTemperature());
-  PDEBUG("\tPressure: ");
-  PDEBUG(altimeter_.getPressure());
-  PDEBUG("\n");
-
-  altitude_ = getAltitudeAboveSeaLevel();
-
-  return true;
-  
-}
-
 bool AntennaPosition::getGPSPosition() {
 
     latitude_ = GPS_.getLatitude() / 10000000.0;;
@@ -71,10 +36,10 @@ bool AntennaPosition::getGPSPosition() {
     PDEBUG(longitude_);
     PDEBUG(F(" (degrees)"));
 
-    // altitude_ = GPS_.getAltitudeMSL() / 1000.0; // Altitude above Mean Sea Level
-    // PDEBUG(F(" Alt: "));
-    // PDEBUG(altitude_);
-    // PDEBUG(F(" (m)"));
+    altitude_ = GPS_.getAltitudeMSL() / 1000.0; // Altitude above Mean Sea Level
+    PDEBUG(F(" Alt: "));
+    PDEBUG(altitude_);
+    PDEBUG(F(" (m)"));
 
     byte SIV = GPS_.getSIV();
     Serial.print(F(" SIV: "));
@@ -83,22 +48,12 @@ bool AntennaPosition::getGPSPosition() {
     PDEBUG("\n");
 
     return SIV > MIN_SATELLITES;
-}
 
-// Adapted from Fola Fatola https://github.com/UWARG/efs-zeropilot-3.5/pull/53
-float AntennaPosition::getAltitudeAboveSeaLevel(){
-	float pressure = altimeter_.getPressure();
-
-	const float CURRENT_PRESSURE = pressure * 100.0f;
-	const float EXPONENT = (log(CURRENT_PRESSURE) - log(REFERENCE_PRESSURE)) / EXP_GMRL;
-
-	float altitudeAboveSeaLevel = REFERENCE_TEMP / TEMP_LAPSE_RATE * (1 - pow(M_E, EXPONENT));
-
-  PDEBUG("Altitude Above Sea Level: ");
-  PDEBUG(altitudeAboveSeaLevel);
-  PDEBUG("\n");
-
-	return altitudeAboveSeaLevel;
+    // E7 Bay coordinates
+    // latitude_ = 43.47360952;
+    // longitude_ = -80.5401446;
+    // altitude_ = 330;
+    // return true;
 }
 
 float AntennaPosition::latitude() {

@@ -5,6 +5,10 @@
 AntennaDynamics::AntennaDynamics():
     initialAntennaAzimuth_ {0}
 {
+    
+}
+
+void AntennaDynamics::begin() {
     pitchServo_.attach(PITCH_PWM);
     yawServo_.attach(YAW_PWM);
 }
