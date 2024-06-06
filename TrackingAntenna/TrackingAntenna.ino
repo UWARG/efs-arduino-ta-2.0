@@ -12,25 +12,25 @@ TaskHandle_t xRunAntennaHandle = NULL;
 
 
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
-  Serial1.begin(115200);
+    // put your setup code here, to run once:
+    Serial.begin(9600);
+    Serial1.begin(115200);
 
-  while(!Serial);
+    while(!Serial);
 
-  antennaDyn.begin();
+    antennaDyn.begin();
 
-  while (!antennaPos.beginGPS()) {
-    PDEBUG("Could not connect to GPS, retrying... \n");
-    delay(1000);
-  }
+    while (!antennaPos.beginGPS()) {
+        PDEBUG("Could not connect to GPS, retrying... \n");
+        delay(1000);
+    }
 
-  while (!antennaPos.getGPSPosition()) {
-    PDEBUG("Not enough satellites found, retrying... \n");   
-    delay(1000);
-  }
+    while (!antennaPos.getGPSPosition()) {
+        PDEBUG("Not enough satellites found, retrying... \n");   
+        delay(1000);
+    }
 
-  antennaDyn.manualSetup(); // until compass is installed
+    antennaDyn.manualSetup(); // until compass is installed
 
 //   antennaDyn.setNorthBearing(antennaPos.northBearing()); // Once compass is installed
 
@@ -59,6 +59,6 @@ void runAntenna(void * pvParameters) {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+    // put your main code here, to run repeatedly:
     
 }
