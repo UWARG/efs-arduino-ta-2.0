@@ -20,6 +20,16 @@ void setup() {
 
     antennaDyn.begin();
 
+    while (!DronePosition::beginWiFi()) {
+        PDEBUG("Could not connect to WiFi, retrying... \n");
+        delay(1000);
+    }
+
+    while (!DronePosition::connectWiFi("ssid", "pass")) {
+        PDEBUG("Attempting to connect to WiFi, this may take a bit...");
+        delay(10000);
+    }
+
     while (!antennaPos.beginGPS()) {
         PDEBUG("Could not connect to GPS, retrying... \n");
         delay(1000);
@@ -34,7 +44,7 @@ void setup() {
 
 //   antennaDyn.setNorthBearing(antennaPos.northBearing()); // Once compass is installed
 
-    xTaskCreate(DronePosition::getPosition, "Get Drone Position", 500, ( void * ) 1, 1, &xDronePosHandle);
+    xTaskCreate(DronePosition::getPosition, "Get Drone Position", 1000, ( void * ) 1, 1, &xDronePosHandle);
     xTaskCreate(runAntenna, "Run Antenna", 1000, ( void* ) 1, 1, &xRunAntennaHandle);
 
     vTaskStartScheduler();
@@ -50,11 +60,7 @@ void runAntenna(void * pvParameters) {
         antennaDyn.setAzimuth(antennaToDroneAzimuth);
         antennaDyn.setElevation(antennaToDroneElevation);
 
-        Serial1.print(DronePosition::altitude(), 7);
-        Serial1.print(" ");
-        Serial1.println(antennaToDroneElevation, 7);
-
-        vTaskDelay(3000 / portTICK_PERIOD_MS);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
 
