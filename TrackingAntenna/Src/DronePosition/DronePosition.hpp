@@ -1,12 +1,12 @@
 class DronePosition {
    private:
-    float latitude_;
-    float longitude_;
-    float altitude_;
+    static float latitude_;
+    static float longitude_;
+    static float altitude_;
 
    public:
-    bool getPosition();
-    float latitude();
-    float longitude();
-    float altitude();
+    static void getPosition(void * pvParameters);
+    static float latitude();
+    static float longitude();
+    static float altitude();
 };

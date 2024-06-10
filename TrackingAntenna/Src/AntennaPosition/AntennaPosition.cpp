@@ -2,25 +2,6 @@
 #include <Wire.h>
 #include "../Config/Config.hpp"
 
-bool AntennaPosition::beginAltimeter() {
-  Wire.begin();
-
-  if (altimeter_.begin() == false) {
-      PDEBUG("MS5611 not found!\n");
-      return false;
-  }
-
-  altimeter_.setOversampling(OSR_ULTRA_HIGH); // OSR_ULTRA_HIGH -> 8.22 millis of samples
-
-  // Grab the sensor's altitude above sea level while on some surface and assign it to base_elev_
-	// Subtract this from measurements at greater heights for the height above that initial surface.
-	for (int i = 0; i < 100; i++) { //take a few measurements to make sure they are accurate/consistent.
-		// setBaseElevation();
-	}
-
-  return true;
-}
-
 bool AntennaPosition::beginGPS() {
     PDEBUG("Waiting for GPS fix... \n");
 
@@ -42,26 +23,6 @@ bool AntennaPosition::beginGPS() {
     PDEBUG("GPS: connected through I2C \n");
 
     return true;
-}
-
-bool AntennaPosition::getAltimeterPosition() {
-  int result = altimeter_.read();
-  if (result != MS5611_READ_OK)
-  {
-    PDEBUG("Error in read: ");
-    PDEBUG(result);
-    PDEBUG("\n");
-    return false;
-  }
-
-  PDEBUG("Temperature: ");
-  PDEBUG(altimeter_.getTemperature());
-  PDEBUG("\tPressure: ");
-  PDEBUG(altimeter_.getPressure());
-  PDEBUG("\n");
-
-  return true;
-  
 }
 
 bool AntennaPosition::getGPSPosition() {
@@ -87,6 +48,12 @@ bool AntennaPosition::getGPSPosition() {
     PDEBUG("\n");
 
     return SIV > MIN_SATELLITES;
+
+    // E7 Bay coordinates
+    // latitude_ = 43.47360952;
+    // longitude_ = -80.5401446;
+    // altitude_ = 330;
+    // return true;
 }
 
 float AntennaPosition::latitude() {
@@ -102,6 +69,6 @@ float AntennaPosition::altitude() {
 }
 
 float AntennaPosition::northBearing() {
-  return 0;
+    return 0;
     // return northBearing_; // nothing getting this value currently
 }

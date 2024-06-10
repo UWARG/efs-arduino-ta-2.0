@@ -8,6 +8,7 @@ class AntennaDynamics {
 
    public:
     AntennaDynamics();
+    void begin();
     void manualSetup(); // until compass is installed
     void setNorthAngle(float angle);
     bool setAzimuth(float azimuth);

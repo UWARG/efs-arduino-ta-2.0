@@ -1,5 +1,6 @@
 #include "Util.hpp"
-#include <cmath>
+// #include <cmath> // for seeeduino
+#include <math.h> // for arduino mega
 #include "Arduino.h"
 
 inline double toRadians(double degrees) {
@@ -47,6 +48,6 @@ double calculateAzimuth(double baseLat, double baseLon, double droneLat, double 
 double calculateElevation(double distance, double baseAlt, double droneAlt) {
     double elevationAngle = atan((droneAlt-baseAlt)/distance);
 
-    return elevationAngle;
+    return toDegrees(elevationAngle);
 }
 
