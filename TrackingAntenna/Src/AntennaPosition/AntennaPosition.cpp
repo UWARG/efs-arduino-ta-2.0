@@ -26,7 +26,7 @@ bool AntennaPosition::beginGPS() {
         return true;
 
     #else
-        PDEBUG("GPS Disabled, using hard coded values \n")
+        PDEBUG("GPS Disabled, using hard coded values \n");
         return true;
     #endif
 }
@@ -60,7 +60,7 @@ bool AntennaPosition::getGPSPosition() {
         PDEBUG(F("Lat: "));
         PDEBUG(latitude_);
 
-        longitude = ANTENNA_LONGITUDE;
+        longitude_ = ANTENNA_LONGITUDE;
         PDEBUG(F(" Long: "));
         PDEBUG(longitude_);
         PDEBUG(F(" (degrees)"));

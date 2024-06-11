@@ -11,8 +11,8 @@
 #endif
 
 // Servo Pins
-#define YAW_PWM A3
-#define PITCH_PWM A2
+#define YAW_PWM 12
+#define PITCH_PWM 13
 
 // Airlift Pins
 #define WIFI_SPI       SPI  // The default SPI pins
@@ -22,20 +22,22 @@
 #define WIFI_GPIO0   -1   // Not connected
 
 // Servo Limits and Angles
-#define YAW_START_MICROSECONDS 740
-#define YAW_END_MICROSECONDS 2260
+#define YAW_START_MICROSECONDS 1000
+#define YAW_END_MICROSECONDS 2000
 
 #define YAW_START_ANGLE 175
 #define YAW_END_ANGLE -175
 
-#define PITCH_START_MICROSECONDS 575
-#define PITCH_END_MICROSECONDS 2300
+#define PITCH_START_MICROSECONDS 1000
+#define PITCH_END_MICROSECONDS 2000
 
 #define MIN_SATELLITES 5 // sets the minimum number of satellites that need to be detected for antenna get position to return true
 
-#define PACKET_BUFFER_SIZE 256 // if significantly changing this value, make sure iterator data types and FreeRTOS delays are sufficient for it
+#define PACKET_BUFFER_SIZE 255 // if significantly changing this value, make sure iterator data types and FreeRTOS delays are sufficient for it
 
-#define GPS
+#define LOCAL_PORT 16550
+
+// #define GPS
 #define MAVLINK
 #define WIFI
 

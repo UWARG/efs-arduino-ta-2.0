@@ -1,9 +1,12 @@
 #include <WiFiUdp.h>
+#include "../Config/Config.hpp"
 
 class DronePosition {
    private:
     static WiFiUDP UDP_;
-    static char packetBuffer_[255]; //buffer to hold incoming packet
+    static uint8_t packetBuffer_[PACKET_BUFFER_SIZE]; //buffer to hold incoming packet
+    static int len;
+    static int status_;
     static float latitude_;
     static float longitude_;
     static float altitude_;
