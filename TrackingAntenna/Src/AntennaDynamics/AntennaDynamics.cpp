@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "AntennaDynamics.hpp"
 #include "../Config/Config.hpp"
+#include "../Util/Util.hpp"
 
 AntennaDynamics::AntennaDynamics():
     initialAntennaAzimuth_ {0}
@@ -15,7 +16,7 @@ void AntennaDynamics::begin() {
 
 void AntennaDynamics::manualSetup() { // don't use this when we have the compass again
     setYawAngle(0);
-    delay(5000);
+    myDelay(5000);
 }
 
 void AntennaDynamics::setNorthAngle(float angle) {

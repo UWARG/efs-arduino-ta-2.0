@@ -73,7 +73,7 @@ bool DronePosition::parseUDP() {
         // PDEBUG("\n");
 
         // read the packet into packetBufffer
-        len = UDP_.read(packetBuffer_, PACKET_BUFFER_SIZE);
+        len = UDP_.read(packetBuffer_, PACKET_BUFFER_SIZE); // this is the issue?
         if (len > 0) {
             packetBuffer_[len] = 0;
         }
@@ -90,9 +90,9 @@ void DronePosition::getPosition(void * pvParameters) {
     while (true) {
         mavlink_message_t msg;
         mavlink_status_t status;
-        if (WiFi.status() != WL_CONNECTED) {
-            PDEBUG(WiFi.status());
-        }
+        // if (WiFi.status() != WL_CONNECTED) {
+        //     // PDEBUG(WiFi.status());
+        // }
 
         if (parseUDP()) {
             for (uint16_t i{0};  i < len; ++i) {
@@ -123,8 +123,8 @@ void DronePosition::getPosition(void * pvParameters) {
                 vTaskDelay(2 / portTICK_PERIOD_MS); // assuming 9600 baud for mavlink
             }
         }
-
-        vTaskDelay(2 / portTICK_PERIOD_MS); // assuming 9600 baud for mavlink
+        PDEBUG("test321 \n");
+        vTaskDelay(100 / portTICK_PERIOD_MS); // assuming 9600 baud for mavlink
     }
 }
 

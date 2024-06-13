@@ -1,5 +1,7 @@
 #define EARTH_RADIUS 6372797.56085
 
+bool myDelay(int delayMilliseconds);
+
 inline double toRadians(double degrees);
 inline double toDegrees(double radians);
 

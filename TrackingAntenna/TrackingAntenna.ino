@@ -11,14 +11,11 @@ TaskHandle_t xDronePosHandle = NULL;
 TaskHandle_t xRunAntennaHandle = NULL;
 TaskHandle_t xSetupAntennaHandle = NULL;
 
-bool myDelay(int delayMilliseconds) { // To be only used from setup() to replace delay(). Can not be used when multiple threads are running with FreeRTOS. Call this function once before using the if() to initialize lastMillis
-    static uint32_t lastMillis; // right now this will work as long as the arduino isnt stuck on setup() for a couple days (integer overflow for lastMillis)
-    if (millis() - lastMillis > delayMilliseconds) {
-        lastMillis = millis();
-        return true;
-    }
-    return false;
-}
+// #define MACRO(milliseconds, condition, else) \
+// ( \
+//     (uint32_t lastMillis {0}), \
+//     ()
+// )
 
 void setup() {
     // put your setup code here, to run once:
@@ -29,42 +26,72 @@ void setup() {
 
     // antennaDyn.begin();
 
-    while (true) {
-        if (myDelay(1000)) {
-            if (DronePosition::beginWiFi()) {
-                break;
-            } else {
-                PDEBUG("Could not connect to WiFi, retrying... \n");
-            }
-        }
+    while (!DronePosition::beginWiFi()) {
+        PDEBUG("Could not connect to WiFi, retrying... \n");
+        myDelay(1000);
     }
 
-    while (true) {
-        if (myDelay(10000)) {
-            if (DronePosition::connectWiFi("roni iPhone", "roniwifi")) {
-                break;
-            } else {
-                PDEBUG("Attempting to connect to WiFi, this may take a bit... \n");
-            }   
-        }
+    // while (true) {
+    //     if (myDelay(1000)) {
+    //         if (DronePosition::beginWiFi()) {
+    //             break;
+    //         } else {
+    //             PDEBUG("Could not connect to WiFi, retrying... \n");
+    //         }
+    //     }
+    // }
+    
+    while (!DronePosition::connectWiFi("roni iPhone", "roniwifi")) {
+        PDEBUG("Attempting to connect to WiFi, this may take a bit... \n");
+        myDelay(10000);
     }
 
-    // while (!antennaPos.beginGPS()) {
-    //     PDEBUG("Could not connect to GPS, retrying... \n");
-    //     delay(1000);
+    // while (true) {
+    //     if (myDelay(10000)) {
+    //         if (DronePosition::connectWiFi("roni iPhone", "roniwifi")) {
+    //             break;
+    //         } else {
+    //             PDEBUG("Attempting to connect to WiFi, this may take a bit... \n");
+    //         }   
+    //     }
     // }
 
-    // while (!antennaPos.getGPSPosition()) {
-    //     PDEBUG("Not enough satellites found, retrying... \n");   
-    //     delay(1000);
+    while (!antennaPos.beginGPS()) {
+        PDEBUG("Could not connect to GPS, retrying... \n");
+        myDelay(1000);
+    }
+
+    // while (true) {
+    //     if (myDelay(1000)) {
+    //         if (antennaPos.beginGPS()) {
+    //             break;
+    //         } else {
+    //             PDEBUG("Could not connect to GPS, retrying... \n");
+    //         }   
+    //     }
     // }
 
-    // antennaDyn.manualSetup(); // until compass is installed
+    while (!antennaPos.getGPSPosition()) {
+        PDEBUG("Not enough satellites found, retrying... \n"); 
+        myDelay(1000);
+    }
+
+    // while (true) {
+    //     if (myDelay(1000)) {
+    //         if (antennaPos.getGPSPosition()) {
+    //             break;
+    //         } else {
+    //             PDEBUG("Not enough satellites found, retrying... \n"); 
+    //         }   
+    //     }
+    // }
+
+    antennaDyn.manualSetup(); // until compass is installed
 
 //   antennaDyn.setNorthBearing(antennaPos.northBearing()); // Once compass is installed
 
     xTaskCreate(DronePosition::getPosition, "Get Drone Position", 1000, ( void * ) 1, 1, &xDronePosHandle);
-    // xTaskCreate(runAntenna, "Run Antenna", 1000, ( void* ) 1, 1, &xRunAntennaHandle);
+    xTaskCreate(runAntenna, "Run Antenna", 1000, ( void* ) 1, 1, &xRunAntennaHandle);
 
     vTaskStartScheduler();
 }
@@ -78,6 +105,7 @@ void runAntenna(void * pvParameters) {
         float antennaToDroneElevation = calculateElevation(antennaToDroneDistance, antennaPos.altitude(), DronePosition::altitude());
         antennaDyn.setAzimuth(antennaToDroneAzimuth);
         antennaDyn.setElevation(antennaToDroneElevation);
+        PDEBUG("test123 \n");
 
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
@@ -85,5 +113,5 @@ void runAntenna(void * pvParameters) {
 
 void loop() {
     // put your main code here, to run repeatedly:
-    
+    // PDEBUG("TASKS FAILED");
 }

@@ -16,9 +16,9 @@
 
 // Airlift Pins
 #define WIFI_SPI       SPI  // The default SPI pins
-#define WIFI_SPI_CS    10   // Chip select pin
-#define WIFI_SPI_ACK    7   // a.k.a BUSY or READY pin
-#define WIFI_RESETN   5   // Reset pin
+#define WIFI_SPI_CS    40   // Chip select pin
+#define WIFI_SPI_ACK    42   // a.k.a BUSY or READY pin
+#define WIFI_RESETN   44   // Reset pin
 #define WIFI_GPIO0   -1   // Not connected
 
 // Servo Limits and Angles
@@ -33,10 +33,11 @@
 
 #define MIN_SATELLITES 5 // sets the minimum number of satellites that need to be detected for antenna get position to return true
 
-#define PACKET_BUFFER_SIZE 255 // if significantly changing this value, make sure iterator data types and FreeRTOS delays are sufficient for it
+#define PACKET_BUFFER_SIZE 512 // if significantly changing this value, make sure iterator data types and FreeRTOS delays are sufficient for it
 
 #define LOCAL_PORT 16550
 
+// Comment these out to disable
 // #define GPS
 #define MAVLINK
 #define WIFI
