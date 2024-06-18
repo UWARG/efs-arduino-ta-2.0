@@ -1,6 +1,6 @@
 #include "DronePosition.hpp"
 #include <MAVLink.h>
-#include <Arduino_FreeRTOS.h>
+// #include <Arduino_FreeRTOS.h>
 #include <WiFiNINA.h>
 
 WiFiUDP DronePosition::UDP_;
@@ -87,7 +87,7 @@ bool DronePosition::parseUDP() {
 }
 
 void DronePosition::getPosition(void * pvParameters) {
-    while (true) {
+    // while (true) {
         mavlink_message_t msg;
         mavlink_status_t status;
         // if (WiFi.status() != WL_CONNECTED) {
@@ -120,12 +120,11 @@ void DronePosition::getPosition(void * pvParameters) {
                     }
                 }
 
-                vTaskDelay(2 / portTICK_PERIOD_MS); // assuming 9600 baud for mavlink
+                // vTaskDelay(2 / portTICK_PERIOD_MS); // assuming 9600 baud for mavlink
             }
         }
-        PDEBUG("test321 \n");
-        vTaskDelay(100 / portTICK_PERIOD_MS); // assuming 9600 baud for mavlink
-    }
+        // vTaskDelay(100 / portTICK_PERIOD_MS); // assuming 9600 baud for mavlink
+    // }
 }
 
 float DronePosition::latitude() {
