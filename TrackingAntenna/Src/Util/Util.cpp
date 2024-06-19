@@ -3,21 +3,12 @@
 #include <math.h> // for arduino mega
 #include "Arduino.h"
 
-bool myDelay(int delayMilliseconds) {
+bool myDelay(int delayMilliseconds) { // keeping this here for now as if we reintroduce FreeRTOS this will be useful, remove once we know we're never going to use FreeRTOS
     uint32_t lastMillis {millis()};
     while (millis() - lastMillis > delayMilliseconds) {
         
     }
 }
-
-// bool delayHelper(int delayMilliseconds) { // To be only used from setup() to replace delay(). Can not be used when multiple threads are running with FreeRTOS. Call this function once before using the if() to initialize lastMillis
-//     static uint32_t lastMillis; // right now this will work as long as the arduino isnt stuck on setup() for a couple days (integer overflow for lastMillis)
-//     if (millis() - lastMillis > delayMilliseconds) {
-//         lastMillis = millis();
-//         return true;
-//     }
-//     return false;
-// }
 
 inline double toRadians(double degrees) {
     return degrees * (M_PI / 180);

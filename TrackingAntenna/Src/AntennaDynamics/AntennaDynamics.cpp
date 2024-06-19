@@ -16,7 +16,7 @@ void AntennaDynamics::begin() {
 
 void AntennaDynamics::manualSetup() { // don't use this when we have the compass again
     setYawAngle(0);
-    myDelay(5000);
+    delay(5000);
 }
 
 void AntennaDynamics::setNorthAngle(float angle) {

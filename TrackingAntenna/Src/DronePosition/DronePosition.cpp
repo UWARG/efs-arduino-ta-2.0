@@ -5,8 +5,7 @@
 
 WiFiUDP DronePosition::UDP_;
 uint8_t DronePosition::packetBuffer_[PACKET_BUFFER_SIZE] {}; 
-int DronePosition::len {0};
-int DronePosition::status_ = WL_IDLE_STATUS;
+uint16_t DronePosition::status_ = WL_IDLE_STATUS;
 float DronePosition::latitude_ = 0;
 float DronePosition::longitude_ = 0;
 float DronePosition::altitude_ = 0;
@@ -60,7 +59,7 @@ bool DronePosition::connectWiFi(char ssid[], char pass[]) {
     }
 }
 
-bool DronePosition::parseUDP() {
+uint16_t DronePosition::parseUDP() {
     // if there's data available, read a packet
     int packetSize = UDP_.parsePacket();
     if (packetSize) {
@@ -73,20 +72,17 @@ bool DronePosition::parseUDP() {
         // PDEBUG("\n");
 
         // read the packet into packetBufffer
-        len = UDP_.read(packetBuffer_, PACKET_BUFFER_SIZE); // this is the issue?
-        if (len > 0) {
-            packetBuffer_[len] = 0;
-        }
+        uint16_t messageLength = UDP_.read(packetBuffer_, PACKET_BUFFER_SIZE); // this is the issue?
         // PDEBUG("Contents:\n");
         // PDEBUG(packetBuffer_);
         // PDEBUG("\n");
 
-        return true;
+        return messageLength;
     }
-    return false;
+    return 0;
 }
 
-void DronePosition::getPosition(void * pvParameters) {
+void DronePosition::getPosition() {
     // while (true) {
         mavlink_message_t msg;
         mavlink_status_t status;
@@ -94,7 +90,8 @@ void DronePosition::getPosition(void * pvParameters) {
         //     // PDEBUG(WiFi.status());
         // }
 
-        if (parseUDP()) {
+        int messageLength = parseUDP();
+        if (messageLength > 0) {
             for (uint16_t i{0};  i < len; ++i) {
                 uint8_t c = packetBuffer_[i];
 
@@ -119,12 +116,8 @@ void DronePosition::getPosition(void * pvParameters) {
 
                     }
                 }
-
-                // vTaskDelay(2 / portTICK_PERIOD_MS); // assuming 9600 baud for mavlink
             }
         }
-        // vTaskDelay(100 / portTICK_PERIOD_MS); // assuming 9600 baud for mavlink
-    // }
 }
 
 float DronePosition::latitude() {
