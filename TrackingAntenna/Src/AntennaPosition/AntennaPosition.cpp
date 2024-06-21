@@ -90,8 +90,3 @@ float AntennaPosition::longitude() {
 float AntennaPosition::altitude() {
     return altitude_;
 }
-
-float AntennaPosition::northBearing() {
-    return 0;
-    // return northBearing_; // nothing getting this value currently
-}

@@ -14,7 +14,7 @@ void setup() {
 
     while(!Serial);
 
-    // antennaDyn.begin();
+    antennaDyn.begin();
 
     while (!DronePosition::beginWiFi()) {
         PDEBUG("Could not connect to WiFi, retrying... \n");

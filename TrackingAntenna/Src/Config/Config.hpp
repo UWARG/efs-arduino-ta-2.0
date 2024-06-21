@@ -22,8 +22,8 @@
 #define WIFI_GPIO0   -1   // Not connected
 
 // Servo Limits and Angles
-#define YAW_START_MICROSECONDS 1000
-#define YAW_END_MICROSECONDS 2000
+#define YAW_START_MICROSECONDS 880
+#define YAW_END_MICROSECONDS 2200
 
 #define YAW_START_ANGLE 175
 #define YAW_END_ANGLE -175
@@ -37,10 +37,8 @@
 
 #define LOCAL_PORT 16550
 
-// Comment these out to disable
+// disable GPS to use ANTENNA_ values instead
 // #define GPS
-#define MAVLINK
-#define WIFI
 
 #ifndef GPS
     #define ANTENNA_LATITUDE 43.47360952;
@@ -48,13 +46,12 @@
     #define ANTENNA_ALTITUDE 330;
 #endif
 
-#ifndef MAVLINK
+
+// disable WIFI to use DRONE_ values instead
+#define WIFI
+
+#ifndef WIFI
     #define DRONE_LATITUDE 43.47360952;
     #define DRONE_LONGITUDE -80.5401446;
     #define DRONE_ALTITUDE 330;
 #endif
-
-#ifndef WIFI
-    #define MavlinkSerial Serial
-#endif
-
