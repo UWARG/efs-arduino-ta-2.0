@@ -3,6 +3,13 @@
 #include <math.h> // for arduino mega
 #include "Arduino.h"
 
+bool myDelay(int delayMilliseconds) { // keeping this here for now as if we reintroduce FreeRTOS this will be useful, remove once we know we're never going to use FreeRTOS
+    uint32_t lastMillis {millis()};
+    while (millis() - lastMillis > delayMilliseconds) {
+        
+    }
+}
+
 inline double toRadians(double degrees) {
     return degrees * (M_PI / 180);
 }

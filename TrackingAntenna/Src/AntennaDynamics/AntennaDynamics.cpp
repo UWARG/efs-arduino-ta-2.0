@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "AntennaDynamics.hpp"
 #include "../Config/Config.hpp"
+#include "../Util/Util.hpp"
 
 AntennaDynamics::AntennaDynamics():
     initialAntennaAzimuth_ {0}
