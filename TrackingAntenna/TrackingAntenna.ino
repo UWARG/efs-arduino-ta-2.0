@@ -6,22 +6,22 @@
 
 AntennaPosition antennaPos{};
 AntennaDynamics antennaDyn{};
+DronePosition   dronePos{};
 
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
-    // Serial1.begin(115200);
 
     while(!Serial);
 
     antennaDyn.begin();
 
-    while (!DronePosition::beginWiFi()) {
+    while (!dronePos.beginWiFi()) {
         PDEBUG("Could not connect to WiFi, retrying... \n");
         delay(1000);
     }
     
-    while (!DronePosition::connectWiFi("roni iPhone", "roniwifi")) {
+    while (!dronePos.connectWiFi("roni iPhone", "roniwifi")) {
         PDEBUG("Attempting to connect to WiFi, this may take a bit... \n");
         delay(10000);
     }
@@ -36,17 +36,19 @@ void setup() {
         delay(1000);
     }
 
-    antennaDyn.manualSetup(); // until compass is installed
-
-//   antennaDyn.setNorthBearing(antennaPos.northBearing()); // Once compass is installed
+    #ifndef COMPASS
+        antennaDyn.manualSetup(); // until compass is installed
+    #else
+        antennaDyn.initializeAzimuth(antennaPos.azimuth()); // Once compass is installed
+    #endif
 
 }
 
 void runAntenna() {
     // More about the Azimuth/Elevation coordinate system https://en.wikipedia.org/wiki/Horizontal_coordinate_system
-    float antennaToDroneDistance = calculateDistance(antennaPos.latitude(), antennaPos.longitude(), DronePosition::latitude(), DronePosition::longitude());
-    float antennaToDroneAzimuth = calculateAzimuth(antennaPos.latitude(), antennaPos.longitude(), DronePosition::latitude(), DronePosition::longitude());
-    float antennaToDroneElevation = calculateElevation(antennaToDroneDistance, antennaPos.altitude(), DronePosition::altitude());
+    float antennaToDroneDistance = calculateDistance(antennaPos.latitude(), antennaPos.longitude(), dronePos.latitude(), dronePos.longitude());
+    float antennaToDroneAzimuth = calculateAzimuth(antennaPos.latitude(), antennaPos.longitude(), dronePos.latitude(), dronePos.longitude());
+    float antennaToDroneElevation = calculateElevation(antennaToDroneDistance, antennaPos.altitude(), dronePos.altitude());
     antennaDyn.setAzimuth(antennaToDroneAzimuth);
     antennaDyn.setElevation(antennaToDroneElevation);
 }
@@ -57,8 +59,7 @@ void loop() {
     // put your main code here, to run repeatedly:
     if (millis() - lastMillisGetPosition > 100) {
         lastMillisGetPosition = millis();
-        DronePosition::getPosition();
-        
+        dronePos.getPosition();
     }
 
     if (millis() - lastMillisRunAntenna > 1000) {
