@@ -13,5 +13,5 @@ class AntennaPosition {
     float latitude();
     float longitude();
     float altitude();
-    float northBearing();
+    float azimuth();
 };

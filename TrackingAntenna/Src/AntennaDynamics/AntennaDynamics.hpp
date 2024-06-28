@@ -10,7 +10,9 @@ class AntennaDynamics {
     AntennaDynamics();
     void begin();
     void manualSetup(); // until compass is installed
-    void setNorthAngle(float angle);
+    void initalizeAzimuth(float azimuth);
+    float yawAngle();
+    void setInitialAntennaAzimuth(float angle);
     bool setAzimuth(float azimuth);
     bool setYawAngle(float angle);
     bool setElevation(float elevation);

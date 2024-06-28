@@ -2,6 +2,7 @@
 
 bool myDelay(int delayMilliseconds);
 
+float mapFloat(float x, float in_min, float in_max, float out_min, float out_max);
 inline double toRadians(double degrees);
 inline double toDegrees(double radians);
 

@@ -15,11 +15,48 @@ void AntennaDynamics::begin() {
 }
 
 void AntennaDynamics::manualSetup() { // don't use this when we have the compass again
-    setYawAngle(0);
-    delay(5000);
+    float currentAngle {0};
+
+    PDEBUG("Beginning initial antenna azimuth calibration (north calibration). \nUse the 'a' and 'd' keys to rotate the antenna and space key when it is facing north. \n");
+
+    while (true) {
+        while (MANUAL_SERIAL.available() > 0) {
+            char c = MANUAL_SERIAL.read();
+            switch (c) {
+                case 'a':
+                    currentAngle -= 3;
+                    if(currentAngle < YAW_END_ANGLE) {
+                        currentAngle = YAW_END_ANGLE;
+                    }
+                    setYawAngle(currentAngle);
+                    break;
+                case 'd':
+                    currentAngle += 3;
+                    if(currentAngle > YAW_START_ANGLE) {
+                        currentAngle = YAW_START_ANGLE;
+                    }
+                    setYawAngle(currentAngle);
+                    break;
+                case ' ':
+                    setInitialAntennaAzimuth(yawAngle());
+                    PDEBUG("Calibration complete, using angle: ");
+                    PDEBUG(initialAntennaAzimuth_);
+                    PDEBUG("\n");
+                    return;
+            }
+        }
+    }
 }
 
-void AntennaDynamics::setNorthAngle(float angle) {
+void AntennaDynamics::initalizeAzimuth(float azimuth) { // untested function (can't be tested until compass is installed)
+    initialAntennaAzimuth_ = azimuth - yawAngle();
+}
+
+float AntennaDynamics::yawAngle() {
+    return mapFloat(yawServo_.readMicroseconds(), YAW_END_MICROSECONDS, YAW_START_MICROSECONDS, YAW_END_ANGLE, YAW_START_ANGLE);
+}
+
+void AntennaDynamics::setInitialAntennaAzimuth(float angle) {
     initialAntennaAzimuth_ = angle;
 }
 
@@ -84,17 +121,17 @@ bool AntennaDynamics::setElevation(float elevation) {
 
 // Function to set the pitch angle of the tracker in degrees
 bool AntennaDynamics::setPitchAngle(float angle) {
-    if (angle > 90) {
-        angle = 90;
-    } else if (angle < 0) {
-        angle = 0;
-    }
-
-    if (angle > 90 || angle < 0) {
-        return false;
+    if (angle > PITCH_END_ANGLE) {
+        angle = PITCH_END_ANGLE;
+    } else if (angle < PITCH_START_ANGLE) {
+        angle = PITCH_START_ANGLE;
     }
     
-    int pitchMicroseconds = map(angle, 0, 90, PITCH_START_MICROSECONDS, PITCH_END_MICROSECONDS);
+    int pitchMicroseconds = map(angle, PITCH_START_ANGLE, PITCH_END_ANGLE, PITCH_START_MICROSECONDS, PITCH_END_MICROSECONDS);
+
+    if (pitchMicroseconds > PITCH_END_MICROSECONDS || pitchMicroseconds < PITCH_START_MICROSECONDS) {
+        return false;
+    }
 
     pitchServo_.writeMicroseconds(pitchMicroseconds);
 
