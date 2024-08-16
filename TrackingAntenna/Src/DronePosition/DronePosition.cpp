@@ -3,12 +3,16 @@
 // #include <Arduino_FreeRTOS.h>
 #include <WiFiNINA.h>
 
-WiFiUDP DronePosition::UDP_;
-uint8_t DronePosition::packetBuffer_[PACKET_BUFFER_SIZE] {}; 
-uint8_t DronePosition::status_ = WL_IDLE_STATUS;
-float DronePosition::latitude_ = 0;
-float DronePosition::longitude_ = 0;
-float DronePosition::altitude_ = 0;
+DronePosition::DronePosition():
+    UDP_ {},
+    packetBuffer_ {},
+    WiFiStatus_ {WL_IDLE_STATUS},
+    latitude_ {0},
+    longitude_ {0},
+    altitude_ {0}
+{
+
+}
 
 bool DronePosition::beginWiFi() {
     #ifdef WIFI
@@ -30,13 +34,13 @@ bool DronePosition::beginWiFi() {
 
 bool DronePosition::connectWiFi(char ssid[], char pass[]) {
     #ifdef WIFI
-        if (status_ != WL_CONNECTED) {
+        if (WiFiStatus_ != WL_CONNECTED) {
             // attempt to connect to Wifi network:
             PDEBUG("Attempting to connect to SSID: ");
             PDEBUG(ssid);
             PDEBUG("\n");
             // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-            status_ = WiFi.begin(ssid, pass);
+            WiFiStatus_ = WiFi.begin(ssid, pass);
             return false;
         } else {
             PDEBUG("Connected to WiFi \n");
@@ -85,7 +89,10 @@ uint16_t DronePosition::parseUDP() {
         // read the packet into packetBufffer
         uint16_t messageLength = UDP_.read(packetBuffer_, PACKET_BUFFER_SIZE);
         // PDEBUG("Contents:\n");
-        // PDEBUG(packetBuffer_);
+        // for (uint16_t i{0};  i < messageLength; ++i) {
+        //     char c = packetBuffer_[i];
+        //     PDEBUG(c);
+        // }
         // PDEBUG("\n");
 
         return messageLength;
@@ -147,6 +154,14 @@ bool DronePosition::getPosition() {
         return true;
     #endif
 }
+
+// void static startTask(void *pvParameters) { keeping for if we switch back to FreeRTOS
+//     auto* context = static_cast<DronePosition*>(pvParameters);
+//     while(1) {
+//         context->getPosition();
+//         vTaskDelay()
+//     }
+// }
 
 float DronePosition::latitude() {
     return latitude_;
