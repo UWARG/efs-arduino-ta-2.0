@@ -14,12 +14,9 @@
 #define YAW_PWM 12
 #define PITCH_PWM 13
 
-// Airlift Pins
-#define WIFI_SPI       SPI  // The default SPI pins
-#define WIFI_SPI_CS    40   // Chip select pin
-#define WIFI_SPI_ACK    42   // a.k.a BUSY or READY pin
-#define WIFI_RESETN   44   // Reset pin
-#define WIFI_GPIO0   -1   // Not connected
+// WiFi ssid & pass
+#define WIFI_SSID "WARG_GSC"
+#define WIFI_PASS "warg8675"
 
 // Servo Limits and Angles
 #define YAW_START_MICROSECONDS 880

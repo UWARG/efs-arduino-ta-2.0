@@ -1,4 +1,4 @@
-#include "Servo.h"
+#include "ESP32Servo.h"
 
 class AntennaDynamics {
    private:

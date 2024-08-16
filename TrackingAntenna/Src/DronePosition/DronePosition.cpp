@@ -1,12 +1,11 @@
 #include "DronePosition.hpp"
 #include <MAVLink.h>
 // #include <Arduino_FreeRTOS.h>
-#include <WiFiNINA.h>
+#include <WiFi.h>
 
 DronePosition::DronePosition():
     UDP_ {},
     packetBuffer_ {},
-    WiFiStatus_ {WL_IDLE_STATUS},
     latitude_ {0},
     longitude_ {0},
     altitude_ {0}
@@ -16,13 +15,17 @@ DronePosition::DronePosition():
 
 bool DronePosition::beginWiFi() {
     #ifdef WIFI
-        WiFi.setPins(WIFI_SPI_CS, WIFI_SPI_ACK, WIFI_RESETN, WIFI_GPIO0, &WIFI_SPI);
+        // WiFi.setPins(WIFI_SPI_CS, WIFI_SPI_ACK, WIFI_RESETN, WIFI_GPIO0, &WIFI_SPI);
         // check for the WiFi module:
-        if (WiFi.status() == WL_NO_MODULE) {
+        if (WiFi.status() == WL_NO_SHIELD) {
             PDEBUG("Communication with WiFi module failed! \n");
             return false;
         } else {
             PDEBUG("Communication with WiFi module succeeded! \n");
+            WiFi.mode(WIFI_STA);
+            WiFi.disconnect();
+            // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
+            WiFi.begin(WIFI_SSID, WIFI_PASS);
             return true;
         }
 
@@ -32,15 +35,13 @@ bool DronePosition::beginWiFi() {
     #endif
 }
 
-bool DronePosition::connectWiFi(char ssid[], char pass[]) {
+bool DronePosition::beginUDP() {
     #ifdef WIFI
-        if (WiFiStatus_ != WL_CONNECTED) {
+        if (WiFi.status() != WL_CONNECTED) {
             // attempt to connect to Wifi network:
             PDEBUG("Attempting to connect to SSID: ");
-            PDEBUG(ssid);
+            PDEBUG(WIFI_SSID);
             PDEBUG("\n");
-            // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-            WiFiStatus_ = WiFi.begin(ssid, pass);
             return false;
         } else {
             PDEBUG("Connected to WiFi \n");

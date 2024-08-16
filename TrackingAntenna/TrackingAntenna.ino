@@ -21,8 +21,8 @@ void setup() {
         delay(1000);
     }
     
-    while (!dronePos.connectWiFi("roni iPhone", "roniwifi")) {
-        PDEBUG("Attempting to connect to WiFi, this may take a bit... \n");
+    while (!dronePos.beginUDP()) {
+        PDEBUG("Attempting to connect to WiFi and initialize UDP, this may take a bit... \n");
         delay(10000);
     }
 
@@ -57,7 +57,7 @@ static unsigned long lastMillisGetPosition {0};
 static unsigned long lastMillisRunAntenna {0};
 void loop() {
     // put your main code here, to run repeatedly:
-    if (millis() - lastMillisGetPosition > 100) {
+    if (millis() - lastMillisGetPosition > 10) {
         lastMillisGetPosition = millis();
         dronePos.getPosition();
     }
